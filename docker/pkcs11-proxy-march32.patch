@@ -1,0 +1,16 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3622dbe1..96e042de 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -33,6 +33,11 @@ if (WIN32)
+   target_link_libraries (pkcs11-proxy ws2_32)
+ endif (WIN32)
+ 
++if (CMAKE_BUILD_MARCH STREQUAL "32")
++	set_target_properties(pkcs11-proxy PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
++	set_target_properties(pkcs11-daemon PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
++endif (CMAKE_BUILD_MARCH STREQUAL "32")
++
+ target_link_libraries (pkcs11-proxy pthread ssl crypto)
+ target_link_libraries (pkcs11-daemon dl pthread ssl crypto seccomp)
+ 
