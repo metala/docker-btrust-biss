@@ -54,8 +54,9 @@ RUN ln -s /lib/x86_64-linux-gnu/libpcsclite.so.1.0.0 /usr/lib/x86_64-linux-gnu/l
  && ln -s /usr/share/btrust_biss/p11_libs/libIDPrimePKCS11.so /usr/lib/libIDPrimePKCS11.so.10
 
 COPY --from=build-pkcs11-proxy /usr/local/src/pkcs11-proxy/build/pkcs11-daemon /usr/local/bin/
-
 COPY ./entrypoint.sh /usr/local/bin/
+
+WORKDIR /usr/share/btrust_biss/
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["bash"]
 

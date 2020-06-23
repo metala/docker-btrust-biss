@@ -15,9 +15,17 @@ case "$ARG" in
 		PKCS11_DAEMON_SOCKET="tcp://0.0.0.0:53940" pkcs11-daemon "./$P11LIB"
 		;;
 	biss)
-		set -x
+		echo "Running 'btrust_biss' application..."
 		sudo -u user -H -- btrust_biss
-		socat TCP4-LISTEN:53951,fork,reuseaddr TCP-CONNECT:127.0.0.1:53952
+		BISS_PID="$(pgrep -f btrust_biss)"
+		echo "Starting TCP proxy (0.0.0.0:53951 -> 127.0.0.1:53952)..."
+		socat TCP4-LISTEN:53951,fork,reuseaddr TCP-CONNECT:127.0.0.1:53952 &
+
+		echo "Waiting for log file to appear..."
+		while [ ! -f ./BISS.log ]; do sleep 1; done
+
+		echo "Waiting for the application to terminate..."
+		tail --pid="$BISS_PID" -f ./BISS.log
 		;;
 	*)
 		"$@"
